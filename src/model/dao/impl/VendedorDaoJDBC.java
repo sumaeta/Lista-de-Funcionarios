@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DbException;
@@ -91,6 +94,45 @@ public class VendedorDaoJDBC implements VendedorDao {
 	public List<Vendedor> findAll() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Vendedor> findByDepartamento(Departamento departamento) {
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		try {
+			st = conn.prepareStatement(
+					"select vendedor. *, departamento.Nome as depName " +
+					"from vendedor inner join departamento " + 
+					"on vendedor.DepartamentoId = departamento.Id " +
+					"where DepartamentoId = ? " +
+					"order by Nome ");
+			
+			st.setInt(1, departamento.getId());
+			rs = st.executeQuery();
+			List<Vendedor> list = new ArrayList<>();
+			
+			Map<Integer, Departamento> map = new HashMap<>();
+			
+			while (rs.next()) {
+				
+				Departamento dep = map.get(rs.getInt("DepartamentoId"));
+				
+				if(dep == null) {
+				dep = instantiateDepartamento(rs);
+				map.put(rs.getInt("DepartamentoId"), dep);
+				}
+				Vendedor obj = instantiateVendedor(rs, dep);
+				list.add(obj);
+			}
+			return list;
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatemant(st);
+			DB.closeResultSet(rs);
+		}
 	}
 
 }
