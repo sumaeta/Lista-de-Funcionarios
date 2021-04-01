@@ -28,6 +28,12 @@ public class Program {
 		}
 		
 		
+		System.out.println("=== teste 3 ===");
+		list = vendedorDao.findAll();
+		for (Vendedor obj : list) {
+			System.out.println(obj);
+		}
+		
 	}
 
 }
