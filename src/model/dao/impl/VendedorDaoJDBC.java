@@ -89,9 +89,26 @@ public class VendedorDaoJDBC implements VendedorDao {
 		
 	}
 
+	
 	@Override
-	public void deleteById(Vendedor obj) {
-		// TODO Auto-generated method stub
+	public void deleteById(Integer id) {
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement("delete from vendedor where Id = ? ");
+			st.setInt(1, id);
+			
+			int rows = st.executeUpdate();
+			
+			if(rows == 0) {
+				System.out.println("Erro: Id não existe ou já foi deletado, por favor reveja o Id digitado");
+			}
+			
+		}catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		}
+		finally {
+			DB.closeStatemant(st);
+		}
 		
 	}
 
@@ -219,6 +236,12 @@ public class VendedorDaoJDBC implements VendedorDao {
 			DB.closeStatemant(st);
 			DB.closeResultSet(rs);
 		}
+	}
+
+	@Override
+	public void deleteById(Vendedor obj) {
+		
+		
 	}
 
 }

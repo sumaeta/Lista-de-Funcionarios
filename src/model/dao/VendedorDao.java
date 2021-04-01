@@ -13,6 +13,7 @@ public interface VendedorDao {
 		Vendedor findById(Integer id);
 		List<Vendedor> findAll();
 		List<Vendedor> findByDepartamento(Departamento departamento);
+		void deleteById(Integer id);
 		
 		
 		
